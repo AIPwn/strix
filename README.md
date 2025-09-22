@@ -32,6 +32,19 @@ export LLM_API_KEY="your-api-key"
 
 # Run security assessment
 strix --target ./app-directory
+
+# Alternative: Use DeepSeek
+export STRIX_LLM="deepseek-chat"
+export DEEPSEEK_API_KEY="your-deepseek-key"
+
+# Alternative: Use GLM
+export STRIX_LLM="glm-4-flash"
+export GLM_API_KEY="your-glm-key"
+
+# Alternative: Use custom OpenAI-compatible API
+export STRIX_LLM="gpt-4"
+export STRIX_API_BASE="https://your-api.com/v1"
+export STRIX_API_KEY="your-custom-key"
 ```
 
 ## Why Use Strix
@@ -69,6 +82,43 @@ strix --target ./app-directory
 - **Scalable Testing** - Parallel execution for fast comprehensive coverage
 - **Dynamic Coordination** - Agents collaborate and share discoveries
 
+
+## 🤖 Supported AI Models
+
+Strix supports multiple LLM providers through OpenAI-compatible APIs:
+
+### OpenAI Models
+```bash
+export STRIX_LLM="openai/gpt-5"
+export LLM_API_KEY="your-openai-key"
+```
+
+### DeepSeek Models
+```bash
+export STRIX_LLM="deepseek-chat"  # or deepseek-coder, deepseek-v2.5, deepseek-r1
+export DEEPSEEK_API_KEY="your-deepseek-key"
+```
+
+### GLM Models (Zhipu AI)
+```bash
+export STRIX_LLM="glm-4-flash"  # or glm-4, glm-4-air, glm-4v, etc.
+export GLM_API_KEY="your-glm-key"
+```
+
+### Custom OpenAI-Compatible API
+```bash
+export STRIX_LLM="any-model-name"
+export STRIX_API_BASE="https://your-api-endpoint.com/v1"
+export STRIX_API_KEY="your-api-key"
+```
+
+### Environment Variables Priority
+1. Explicit parameters in configuration
+2. `STRIX_API_KEY` / `LLM_API_KEY`
+3. Model-specific keys (`DEEPSEEK_API_KEY`, `GLM_API_KEY`, `ZHIPU_API_KEY`)
+4. `OPENAI_API_KEY` (fallback)
+
+See [MODEL_CONFIG.md](MODEL_CONFIG.md) for detailed configuration options.
 
 ## 💻 Usage Examples
 
@@ -119,16 +169,3 @@ Our managed platform provides:
 
 > [!NOTE]
 > Strix is currently in Alpha. Expect rapid updates and improvements.
-
-> [!WARNING]
-> Only test systems you own or have permission to test. You are responsible for using Strix ethically and legally.
-
-## 🌟 Support the Project
-
-**Love Strix?** Give us a ⭐ on GitHub!
-
-## 👥 Join Our Community
-
-Have questions? Found a bug? Want to contribute? **[Join our Discord!](https://discord.gg/yduEyduBsp)**
-
-</div>

@@ -24,10 +24,6 @@ from strix.tools import get_tools_prompt
 
 logger = logging.getLogger(__name__)
 
-api_key = os.getenv("LLM_API_KEY")
-if api_key:
-    litellm.api_key = api_key
-
 
 class LLMRequestFailedError(Exception):
     def __init__(self, message: str, details: str | None = None):
@@ -51,6 +47,18 @@ MODELS_WITHOUT_STOP_WORDS = [
     "o4-mini",
     "o4-mini-2025-04-16",
     "grok-4-0709",
+    "deepseek-chat",
+    "deepseek-coder",
+    "deepseek-v2.5",
+    "deepseek-r1",
+    "glm-4",
+    "glm-4-air",
+    "glm-4-airx",
+    "glm-4-flash",
+    "glm-4v",
+    "glm-z1-air",
+    "glm-z1-airx",
+    "glm-z1-preview",
 ]
 
 REASONING_EFFORT_SUPPORTED_MODELS = [
@@ -67,6 +75,11 @@ REASONING_EFFORT_SUPPORTED_MODELS = [
     "o4-mini-2025-04-16",
     "gemini-2.5-flash",
     "gemini-2.5-pro",
+    "deepseek-r1",
+    "deepseek-v2.5",
+    "glm-4",
+    "glm-4-airx",
+    "glm-z1-preview",
 ]
 
 
@@ -352,6 +365,13 @@ class LLM:
             "temperature": self.config.temperature,
             "timeout": 180,
         }
+
+        # Add API configuration if available
+        if self.config.api_base:
+            completion_args["api_base"] = self.config.api_base
+
+        if self.config.api_key:
+            completion_args["api_key"] = self.config.api_key
 
         if self._should_include_stop_param():
             completion_args["stop"] = ["</function>"]

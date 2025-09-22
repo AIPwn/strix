@@ -1,0 +1,31 @@
+# 首次扫描目标（只读、沙箱、安全约束）
+version: "1"
+defaults:
+  sandbox: true           # 强制沙箱模式（STRIX_SANDBOX_MODE=true）
+  timebox_mins: 5
+  tools_allow: [browser, proxy, notes]  # 仅启用与公开页检查相关的工具
+
+targets:
+  - name: CodeBuddy Chat
+    url: https://copilot.tencent.com/chat/
+    instruction: |
+      Test XSS contexts, link handling, and clickjacking headers only.
+      Do not login or perform any privileged actions. Read-only.
+
+  - name: Cloud Studio Home
+    url: https://cloudstudio.net/
+    instruction: |
+      Recon public routes and check client-side XSS and security headers.
+      No login and no state changes. Read-only.
+
+  - name: CloudBase Portal
+    url: https://tcb.cloud.tencent.com/
+    instruction: |
+      Check rendering XSS, clickjacking, headers, and document.domain usage only.
+      No login and no state changes. Read-only.
+
+  - name: Tencent Yuanbao Home
+    url: https://yuanbao.tencent.com/
+    instruction: |
+      Public landing page only; verify headers and clickjacking protection; basic XSS contexts.
+      Do not brute force or login. Read-only.
