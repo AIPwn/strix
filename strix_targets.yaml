@@ -1,31 +1,56 @@
-# 首次扫描目标（只读、沙箱、安全约束）
-version: "1"
+# 超危漏洞聚焦扫描目标（优化后配置）
+version: "2"
 defaults:
   sandbox: true           # 强制沙箱模式（STRIX_SANDBOX_MODE=true）
-  timebox_mins: 5
-  tools_allow: [browser, proxy, notes]  # 仅启用与公开页检查相关的工具
+  timebox_mins: 15        # 增加扫描时间
+  tools_allow: [browser, proxy, notes, terminal]  # 增加终端工具支持深度检测
+  focus_critical: true    # 聚焦超危漏洞
 
 targets:
-  - name: CodeBuddy Chat
-    url: https://copilot.tencent.com/chat/
-    instruction: |
-      Test XSS contexts, link handling, and clickjacking headers only.
-      Do not login or perform any privileged actions. Read-only.
-
-  - name: Cloud Studio Home
+  # 高优先级：容器逃逸和RCE检测
+  - name: Cloud Studio Container Escape
     url: https://cloudstudio.net/
+    priority: critical
     instruction: |
-      Recon public routes and check client-side XSS and security headers.
-      No login and no state changes. Read-only.
+      聚焦容器逃逸和RCE漏洞检测：
+      1. 检查容器配置漏洞：seccomp绕过、cgroup逃逸、mount namespace突破
+      2. 探测工作区权限边界：文件系统越权、预览服务隔离
+      3. 寻找代码执行路径：插件系统、构建链、终端逃逸
+      4. 检测特权提升可能：docker socket挂载、kubeconfig访问
+      重点检查参数注入、命令执行、文件操作相关功能点
 
-  - name: CloudBase Portal
-    url: https://tcb.cloud.tencent.com/
-    instruction: |
-      Check rendering XSS, clickjacking, headers, and document.domain usage only.
-      No login and no state changes. Read-only.
-
-  - name: Tencent Yuanbao Home
+  # 高优先级：MCP控制权限和Agent越权
+  - name: ADP Agent Control
     url: https://yuanbao.tencent.com/
+    priority: critical
     instruction: |
-      Public landing page only; verify headers and clickjacking protection; basic XSS contexts.
-      Do not brute force or login. Read-only.
+      聚焦MCP/Agent控制权限漏洞：
+      1. Agent权限越权测试：工具调用权限、资源访问边界
+      2. 提示词注入防护绕过：模型指令劫持、过滤机制绕过
+      3. 会话隔离失效：跨用户数据泄露、会话劫持
+      4. 工具链权限提升：文件系统访问、网络连接、API调用
+      重点测试MCP协议边界、Agent沙箱逃逸、权限控制机制
+
+  # 高优先级：代码注入和凭据泄露
+  - name: CodeBuddy Code Injection
+    url: https://copilot.tencent.com/chat/
+    priority: critical
+    instruction: |
+      聚焦代码注入和凭据泄露：
+      1. 代码注入测试：模型输出恶意代码、执行绕过、沙箱逃逸
+      2. 凭据泄露检测：API密钥、token、数据库连接等敏感信息
+      3. 工作区文件越权：敏感文件读取、配置文件访问
+      4. 依赖链攻击：恶意包安装、供应链污染
+      重点检查代码生成边界、执行环境隔离、输入验证机制
+
+  # 中优先级：API鉴权和数据隔离
+  - name: CloudBase Auth Bypass
+    url: https://tcb.cloud.tencent.com/
+    priority: high
+    instruction: |
+      聚焦API鉴权绕过和租户隔离：
+      1. API鉴权绕过：token伪造、会话管理漏洞、权限提升
+      2. 租户数据隔离：跨租户数据访问、信息泄露
+      3. 云函数权限：执行环境逃逸、资源访问越权
+      4. 配额绕过：资源限制突破、费用控制失效
+      检查API边界、认证机制、数据隔离措施
